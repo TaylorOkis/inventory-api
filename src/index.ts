@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import customerRouter from "./routes/customer-router";
+import userRouter from "./routes/user-router";
 
 require("dotenv").config();
 const app = express();
@@ -10,6 +11,7 @@ app.use(express.json());
 
 // GET REQUEST
 app.use("/api/v1/customers", customerRouter);
+app.use("/api/v1/users", userRouter);
 
 const PORT = process.env.PORT || 5000;
 
