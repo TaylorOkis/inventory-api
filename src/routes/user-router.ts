@@ -6,10 +6,12 @@ import {
   updateUserById,
   updateUserPasswordById,
   deleteUserById,
+  getAttendants,
 } from "@/controllers/user-controller";
 
 const userRouter = express.Router();
 
+userRouter.route("/attendants").get(getAttendants);
 userRouter.route("/").post(createUser).get(getUsers);
 userRouter
   .route("/:id")
@@ -17,7 +19,5 @@ userRouter
   .patch(updateUserById)
   .delete(deleteUserById);
 userRouter.route("/updatePassword/:id").patch(updateUserPasswordById);
-// userRouter.get("/:id", getCustomerById);
-// userRouter.post("/", createCustomer);
 
 export default userRouter;

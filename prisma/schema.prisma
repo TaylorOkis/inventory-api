@@ -32,8 +32,7 @@ model User {
   role       Role      @default(ATTENDANT)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  shopId     String?
-  shop       Shop?     @relation(fields: [shopId], references: [id], name: "UserShops")
+
   adminShops Shop[]    @relation("AdminShops")
 }
 
@@ -49,13 +48,14 @@ enum Role {
 
 model Shop {
   id            String     @id @default(uuid())
-  name          String     @unique
+  name          String     
+  slug          String     @unique
   location      String     
   phone         String     @unique
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   adminId       String     
   admin         User       @relation(fields: [adminId], references: [id], name: "AdminShops")
-  attendants    User[]     @relation("UserShops")
+  attendantIds  String[]     
 }
 

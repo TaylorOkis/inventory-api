@@ -13,6 +13,7 @@ const createUser = async (req: Request, res: Response) => {
     phone,
     dob,
     gender,
+    role,
     image,
   } = req.body;
 
@@ -51,6 +52,7 @@ const createUser = async (req: Request, res: Response) => {
       phone,
       dob,
       gender,
+      role,
       image: image
         ? image
         : "https://www.kindpng.com/picc/m/451-4517876_default-profile-hd-png-download.png",
@@ -98,14 +100,47 @@ const updateUserById = async (req: Request, res: Response) => {
   const { email, username, firstname, lastname, phone, dob, gender, image } =
     req.body;
 
-  const user = await db.user.findUnique({
+  const existingUser = await db.user.findUnique({
     where: { id },
   });
 
-  if (!user) {
+  if (!existingUser) {
     return res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "User not found", data: null });
+  }
+
+  if (email && email !== existingUser.email) {
+    const existingUserByEmail = await db.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    if (existingUserByEmail) {
+      return res
+        .status(StatusCodes.CONFLICT)
+        .json({ error: "Email Already Taken", data: null });
+    }
+  }
+
+  if (username && username !== existingUser.username) {
+    const existingUserByUsername = await db.user.findUnique({
+      where: { username },
+    });
+    if (existingUserByUsername) {
+      return res
+        .status(StatusCodes.CONFLICT)
+        .json({ error: "Username Already Taken", data: null });
+    }
+  }
+
+  if (phone && phone !== existingUser.phone) {
+    const existingUserByPhone = await db.user.findUnique({ where: { phone } });
+    if (existingUserByPhone) {
+      return res
+        .status(StatusCodes.CONFLICT)
+        .json({ error: "Phone Number Already Taken", data: null });
+    }
   }
 
   const updateUser = await db.user.update({
@@ -158,6 +193,28 @@ const deleteUserById = async (req: Request, res: Response) => {
   return res.status(StatusCodes.OK).json({ status: "success" });
 };
 
+const getAttendants = async (req: Request, res: Response) => {
+  const users = await db.user.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    where: {
+      role: "ATTENDANT",
+    },
+  });
+
+  const filteredUsers = users.map((user: any) => {
+    const { password, ...others } = user;
+    return others;
+  });
+
+  res.status(StatusCodes.OK).json({
+    status: "success",
+    count: filteredUsers.length,
+    data: filteredUsers,
+  });
+};
+
 export {
   createUser,
   getUsers,
@@ -165,4 +222,5 @@ export {
   updateUserById,
   updateUserPasswordById,
   deleteUserById,
+  getAttendants,
 };
