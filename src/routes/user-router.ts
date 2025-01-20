@@ -11,6 +11,7 @@ import {
 
 const userRouter = express.Router();
 
+userRouter.route("/updatePassword/:id").patch(updateUserPasswordById);
 userRouter.route("/attendants").get(getAttendants);
 userRouter.route("/").post(createUser).get(getUsers);
 userRouter
@@ -18,6 +19,5 @@ userRouter
   .get(getUserById)
   .patch(updateUserById)
   .delete(deleteUserById);
-userRouter.route("/updatePassword/:id").patch(updateUserPasswordById);
 
 export default userRouter;
