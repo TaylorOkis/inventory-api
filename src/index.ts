@@ -4,6 +4,7 @@ import customerRouter from "./routes/customer-router";
 import userRouter from "./routes/user-router";
 import shopRouter from "./routes/shop-router";
 import supplierRouter from "./routes/supplier-router";
+import authRouter from "./routes/auth";
 
 require("dotenv").config();
 const app = express();
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // ROUTERS
+app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/customers", customerRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/shops", shopRouter);
