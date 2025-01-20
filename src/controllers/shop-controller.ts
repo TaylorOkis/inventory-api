@@ -1,6 +1,5 @@
 import { db } from "@/db/db";
 import { Request, Response } from "express";
-import { STATUS_CODES } from "http";
 import { StatusCodes } from "http-status-codes";
 
 const createShop = async (req: Request, res: Response) => {

@@ -155,6 +155,8 @@ const updateUserPasswordById = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { password } = req.body;
 
+  //TODO: Get the old password and compare it with the one already on the database.
+
   const user = await db.user.findUnique({
     where: { id },
   });

@@ -9,12 +9,56 @@ datasource db {
 }
 
 model Customer {
-  id         String    @id @default(uuid())
-  email      String    @unique
-  name       String
-  phone      String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id              String         @id @default(uuid())
+  customerType    CustomerType
+  email           String?        @unique
+  firstName       String
+  lastName        String
+  phone           String         @unique 
+  gender          Gender
+  maxCreditLimit  Float
+  maxCreditDays   Int
+  taxPin          String?
+  NIN             String?        @unique
+  country         String?
+  location        String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+enum CustomerType {
+  RETAIL
+  WHOLESALER
+  DISTRIBUTOR
+  OTHER
+}
+
+model Supplier {
+  id                 String         @id @default(uuid())
+  supplierType       SupplierType
+  email              String?        @unique
+  name               String
+  contactPerson      String
+  phone              String         @unique
+  regNumber          String?
+  bankAccountNumber  String?
+  bankName           String?
+  website            String
+  country            String?
+  location           String
+  logo               String?        @default("https://img.icons8.com/?size=100&id=53386&format=png&color=000000")
+  rating             Float
+  notes              String
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+}
+
+enum SupplierType {
+  MANUFACTURER
+  RETAILER
+  WHOLESALER
+  DISTRIBUTOR
+  OTHER
 }
 
 
