@@ -84,14 +84,18 @@ const createSupplier = async (req: Request, res: Response) => {
     },
   });
 
-  res.status(StatusCodes.CREATED).json(newSupplier);
+  res
+    .status(StatusCodes.CREATED)
+    .json({ status: "success", data: newSupplier, error: null });
 };
 
 const getSuppliers = async (req: Request, res: Response) => {
   const suppliers = await db.supplier.findMany({
     orderBy: { createdAt: "desc" },
   });
-  res.status(StatusCodes.OK).json(suppliers);
+  res
+    .status(StatusCodes.OK)
+    .json({ status: "success", data: suppliers, error: null });
 };
 
 const getSupplierById = async (req: Request, res: Response) => {
