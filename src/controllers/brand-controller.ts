@@ -10,11 +10,12 @@ const createBrand = async (req: Request, res: Response) => {
   });
 
   if (existingBrand) {
-    return res.status(StatusCodes.CONFLICT).json({
+    res.status(StatusCodes.CONFLICT).json({
       status: "fail",
       data: null,
       error: `Brand (${name}) already exist`,
     });
+    return;
   }
 
   const newBrand = await db.brand.create({
@@ -48,9 +49,10 @@ const getBrandById = async (req: Request, res: Response) => {
   });
 
   if (!existingBrand) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", data: null, error: "Brand doesn't exist" });
+    return;
   }
 
   res.status(StatusCodes.OK).json({
@@ -69,9 +71,10 @@ const updateBrandById = async (req: Request, res: Response) => {
   });
 
   if (!existingBrand) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "User not found", data: null });
+    return;
   }
 
   if (slug !== existingBrand.slug) {
@@ -79,11 +82,12 @@ const updateBrandById = async (req: Request, res: Response) => {
       where: { slug },
     });
     if (existingBrandBySlug) {
-      return res.status(StatusCodes.CONFLICT).json({
+      res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         error: `Slug (${slug}) already exist`,
         data: null,
       });
+      return;
     }
   }
 
@@ -91,7 +95,7 @@ const updateBrandById = async (req: Request, res: Response) => {
     where: { id },
     data: { name, slug },
   });
-  return res
+  res
     .status(StatusCodes.OK)
     .json({ status: "success", data: updateBrand, error: null });
 };
@@ -99,20 +103,21 @@ const updateBrandById = async (req: Request, res: Response) => {
 const deleteBrandById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const Brand = await db.brand.findUnique({
+  const brand = await db.brand.findUnique({
     where: { id },
   });
-  if (!Brand) {
-    return res
+  if (!brand) {
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "Brand not found", data: null });
+    return;
   }
 
   await db.brand.delete({
     where: { id },
   });
 
-  return res.status(StatusCodes.OK).json({ status: "success" });
+  res.status(StatusCodes.OK).json({ status: "success" });
 };
 
 export {

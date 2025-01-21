@@ -42,7 +42,7 @@ model Supplier {
   name               String
   contactPerson      String
   phone              String         @unique
-  regNumber          String?
+  regNumber          String?        @unique
   bankAccountNumber  String?
   bankName           String?
   website            String

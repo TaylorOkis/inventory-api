@@ -25,11 +25,12 @@ const createCustomer = async (req: Request, res: Response) => {
   });
 
   if (existingCustomerByPhone) {
-    return res.status(StatusCodes.CONFLICT).json({
+    res.status(StatusCodes.CONFLICT).json({
       status: "fail",
       data: null,
       error: `Phone number (${phone}) already in use.`,
     });
+    return;
   }
 
   if (email) {
@@ -40,11 +41,12 @@ const createCustomer = async (req: Request, res: Response) => {
     });
 
     if (existingCustomerByEmail) {
-      return res.status(StatusCodes.CONFLICT).json({
+      res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         data: null,
         error: `Email (${email}) already in use.`,
       });
+      return;
     }
   }
 
@@ -56,11 +58,12 @@ const createCustomer = async (req: Request, res: Response) => {
     });
 
     if (existingCustomerByNIN) {
-      return res.status(StatusCodes.CONFLICT).json({
+      res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         data: null,
         error: `NIN (${NIN}) already in use.`,
       });
+      return;
     }
   }
 
@@ -80,14 +83,18 @@ const createCustomer = async (req: Request, res: Response) => {
       location,
     },
   });
-  return res.status(StatusCodes.CREATED).json(newCustomer);
+  res
+    .status(StatusCodes.CREATED)
+    .json({ status: "success", data: newCustomer, error: null });
 };
 
 const getCustomers = async (req: Request, res: Response) => {
   const customers = await db.customer.findMany({
     orderBy: { createdAt: "desc" },
   });
-  return res.status(StatusCodes.OK).json(customers);
+  res
+    .status(StatusCodes.OK)
+    .json({ status: "success", data: customers, error: null });
 };
 
 const getCustomerById = async (req: Request, res: Response) => {
@@ -97,12 +104,15 @@ const getCustomerById = async (req: Request, res: Response) => {
   });
 
   if (!customer) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "Customer not found", data: null });
+    return;
   }
 
-  return res.status(StatusCodes.OK).json(customer);
+  res
+    .status(StatusCodes.OK)
+    .json({ status: "success", data: customer, error: null });
 };
 
 export { createCustomer, getCustomers, getCustomerById };

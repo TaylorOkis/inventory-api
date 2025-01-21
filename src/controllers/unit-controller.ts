@@ -10,11 +10,12 @@ const createUnit = async (req: Request, res: Response) => {
   });
 
   if (existingUnit) {
-    return res.status(StatusCodes.CONFLICT).json({
+    res.status(StatusCodes.CONFLICT).json({
       status: "fail",
       data: null,
       error: `Unit (${name}) already exist`,
     });
+    return;
   }
 
   const newUnit = await db.unit.create({
@@ -49,9 +50,10 @@ const getUnitById = async (req: Request, res: Response) => {
   });
 
   if (!existingUnit) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", data: null, error: "Unit doesn't exist" });
+    return;
   }
 
   res.status(StatusCodes.OK).json({
@@ -70,9 +72,10 @@ const updateUnitById = async (req: Request, res: Response) => {
   });
 
   if (!existingUnit) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "User not found", data: null });
+    return;
   }
 
   if (slug !== existingUnit.slug) {
@@ -80,11 +83,12 @@ const updateUnitById = async (req: Request, res: Response) => {
       where: { slug },
     });
     if (existingUnitBySlug) {
-      return res.status(StatusCodes.CONFLICT).json({
+      res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         error: `Slug (${slug}) already exist`,
         data: null,
       });
+      return;
     }
   }
 
@@ -92,9 +96,10 @@ const updateUnitById = async (req: Request, res: Response) => {
     where: { id },
     data: { name, abbreviation, slug },
   });
-  return res
+  res
     .status(StatusCodes.OK)
     .json({ status: "success", data: updateUnit, error: null });
+  return;
 };
 
 const deleteUnitById = async (req: Request, res: Response) => {
@@ -104,16 +109,17 @@ const deleteUnitById = async (req: Request, res: Response) => {
     where: { id },
   });
   if (!unit) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "Unit not found", data: null });
+    return;
   }
 
   await db.unit.delete({
     where: { id },
   });
 
-  return res.status(StatusCodes.OK).json({ status: "success" });
+  res.status(StatusCodes.OK).json({ status: "success" });
 };
 
 export { createUnit, getUnits, getUnitById, updateUnitById, deleteUnitById };

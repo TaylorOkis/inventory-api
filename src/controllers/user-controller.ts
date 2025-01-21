@@ -19,25 +19,28 @@ const createUser = async (req: Request, res: Response) => {
 
   const existingUserByEmail = await db.user.findUnique({ where: { email } });
   if (existingUserByEmail) {
-    return res
+    res
       .status(StatusCodes.CONFLICT)
       .json({ error: "Email Already Taken", data: null });
+    return;
   }
 
   const existingUserByUsername = await db.user.findUnique({
     where: { username },
   });
   if (existingUserByUsername) {
-    return res
+    res
       .status(StatusCodes.CONFLICT)
       .json({ error: "Username Already Taken", data: null });
+    return;
   }
 
   const existingUserByPhone = await db.user.findUnique({ where: { phone } });
   if (existingUserByPhone) {
-    return res
+    res
       .status(StatusCodes.CONFLICT)
       .json({ error: "Phone Number Already Taken", data: null });
+    return;
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -60,9 +63,7 @@ const createUser = async (req: Request, res: Response) => {
   });
 
   const { password: savedPassword, ...others } = newUser;
-  return res
-    .status(StatusCodes.CREATED)
-    .json({ status: "success", data: others });
+  res.status(StatusCodes.CREATED).json({ status: "success", data: others });
 };
 
 const getUsers = async (req: Request, res: Response) => {
@@ -73,7 +74,7 @@ const getUsers = async (req: Request, res: Response) => {
     const { password, ...others } = user;
     return others;
   });
-  return res.status(StatusCodes.OK).json({
+  res.status(StatusCodes.OK).json({
     status: "success",
     count: filterdUsers.length,
     data: filterdUsers,
@@ -87,12 +88,13 @@ const getUserById = async (req: Request, res: Response) => {
   });
 
   if (!user) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "User not found", data: null });
+    return;
   }
   const { password, ...others } = user;
-  return res.status(StatusCodes.OK).json({ status: "success", data: others });
+  res.status(StatusCodes.OK).json({ status: "success", data: others });
 };
 
 const updateUserById = async (req: Request, res: Response) => {
@@ -105,9 +107,10 @@ const updateUserById = async (req: Request, res: Response) => {
   });
 
   if (!existingUser) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "User not found", data: null });
+    return;
   }
 
   if (email && email !== existingUser.email) {
@@ -117,9 +120,10 @@ const updateUserById = async (req: Request, res: Response) => {
       },
     });
     if (existingUserByEmail) {
-      return res
+      res
         .status(StatusCodes.CONFLICT)
         .json({ error: "Email Already Taken", data: null });
+      return;
     }
   }
 
@@ -128,18 +132,20 @@ const updateUserById = async (req: Request, res: Response) => {
       where: { username },
     });
     if (existingUserByUsername) {
-      return res
+      res
         .status(StatusCodes.CONFLICT)
         .json({ error: "Username Already Taken", data: null });
+      return;
     }
   }
 
   if (phone && phone !== existingUser.phone) {
     const existingUserByPhone = await db.user.findUnique({ where: { phone } });
     if (existingUserByPhone) {
-      return res
+      res
         .status(StatusCodes.CONFLICT)
         .json({ error: "Phone Number Already Taken", data: null });
+      return;
     }
   }
 
@@ -148,7 +154,7 @@ const updateUserById = async (req: Request, res: Response) => {
     data: { email, username, firstname, lastname, phone, dob, gender, image },
   });
   const { password, ...others } = updateUser;
-  return res.status(StatusCodes.OK).json({ status: "success", data: others });
+  res.status(StatusCodes.OK).json({ status: "success", data: others });
 };
 
 const updateUserPasswordById = async (req: Request, res: Response) => {
@@ -161,9 +167,10 @@ const updateUserPasswordById = async (req: Request, res: Response) => {
     where: { id },
   });
   if (!user) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "User not found", data: null });
+    return;
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -173,7 +180,7 @@ const updateUserPasswordById = async (req: Request, res: Response) => {
     data: { password: hashedPassword },
   });
 
-  return res.status(StatusCodes.OK).json({ status: "success" });
+  res.status(StatusCodes.OK).json({ status: "success" });
 };
 
 const deleteUserById = async (req: Request, res: Response) => {
@@ -183,7 +190,7 @@ const deleteUserById = async (req: Request, res: Response) => {
     where: { id },
   });
   if (!user) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "User not found", data: null });
   }
@@ -192,7 +199,7 @@ const deleteUserById = async (req: Request, res: Response) => {
     where: { id },
   });
 
-  return res.status(StatusCodes.OK).json({ status: "success" });
+  res.status(StatusCodes.OK).json({ status: "success" });
 };
 
 const getAttendants = async (req: Request, res: Response) => {

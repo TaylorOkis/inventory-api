@@ -29,11 +29,12 @@ const createProduct = async (req: Request, res: Response) => {
   });
 
   if (existingProductBySlug) {
-    return res.status(StatusCodes.CONFLICT).json({
+    res.status(StatusCodes.CONFLICT).json({
       status: "fail",
       data: null,
       error: `Product (${name}) already exist`,
     });
+    return;
   }
 
   if (barCode) {
@@ -42,11 +43,12 @@ const createProduct = async (req: Request, res: Response) => {
     });
 
     if (existingBarCode) {
-      return res.status(StatusCodes.CONFLICT).json({
+      res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         data: null,
         error: `Barcode (${barCode}) already exist`,
       });
+      return;
     }
   }
 
@@ -55,11 +57,12 @@ const createProduct = async (req: Request, res: Response) => {
   });
 
   if (existingSku) {
-    return res.status(StatusCodes.CONFLICT).json({
+    res.status(StatusCodes.CONFLICT).json({
       status: "fail",
       data: null,
       error: `Sku (${sku}) already exist`,
     });
+    return;
   }
 
   const existingProductCode = await db.product.findUnique({
@@ -67,11 +70,12 @@ const createProduct = async (req: Request, res: Response) => {
   });
 
   if (existingProductCode) {
-    return res.status(StatusCodes.CONFLICT).json({
+    res.status(StatusCodes.CONFLICT).json({
       status: "fail",
       data: null,
       error: `Product code (${productCode}) already exist`,
     });
+    return;
   }
 
   const newProduct = await db.product.create({
@@ -124,9 +128,10 @@ const getProductById = async (req: Request, res: Response) => {
   });
 
   if (!existingProduct) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", data: null, error: "Product doesn't exist" });
+    return;
   }
 
   res.status(StatusCodes.OK).json({
@@ -164,9 +169,10 @@ const updateProductById = async (req: Request, res: Response) => {
   });
 
   if (!existingProduct) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "Product not found", data: null });
+    return;
   }
 
   if (slug !== existingProduct.slug) {
@@ -174,11 +180,12 @@ const updateProductById = async (req: Request, res: Response) => {
       where: { slug },
     });
     if (existingProductBySlug) {
-      return res.status(StatusCodes.CONFLICT).json({
+      res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         error: `Product (${name}) already exist`,
         data: null,
       });
+      return;
     }
   }
 
@@ -189,11 +196,12 @@ const updateProductById = async (req: Request, res: Response) => {
       });
 
       if (existingBarCode) {
-        return res.status(StatusCodes.CONFLICT).json({
+        res.status(StatusCodes.CONFLICT).json({
           status: "fail",
           data: null,
           error: `Barcode (${barCode}) already exist`,
         });
+        return;
       }
     }
   }
@@ -204,11 +212,12 @@ const updateProductById = async (req: Request, res: Response) => {
     });
 
     if (existingSku) {
-      return res.status(StatusCodes.CONFLICT).json({
+      res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         data: null,
         error: `Sku (${sku}) already exist`,
       });
+      return;
     }
   }
 
@@ -218,11 +227,12 @@ const updateProductById = async (req: Request, res: Response) => {
     });
 
     if (existingProductCode) {
-      return res.status(StatusCodes.CONFLICT).json({
+      res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         data: null,
         error: `Product code (${productCode}) already exist`,
       });
+      return;
     }
   }
   const updateProduct = await db.product.update({
@@ -248,7 +258,7 @@ const updateProductById = async (req: Request, res: Response) => {
       expiryDate,
     },
   });
-  return res
+  res
     .status(StatusCodes.OK)
     .json({ status: "success", data: updateProduct, error: null });
 };
@@ -260,16 +270,17 @@ const deleteProductById = async (req: Request, res: Response) => {
     where: { id },
   });
   if (!product) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "Product not found", data: null });
+    return;
   }
 
   await db.product.delete({
     where: { id },
   });
 
-  return res.status(StatusCodes.OK).json({ status: "success" });
+  res.status(StatusCodes.OK).json({ status: "success" });
 };
 
 export {

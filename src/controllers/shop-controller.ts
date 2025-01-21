@@ -10,11 +10,12 @@ const createShop = async (req: Request, res: Response) => {
   });
 
   if (existingShop) {
-    return res.status(StatusCodes.CONFLICT).json({
+    res.status(StatusCodes.CONFLICT).json({
       status: "fail",
       data: null,
       error: `Shop (${slug}) already exist`,
     });
+    return;
   }
 
   const newShop = await db.shop.create({
@@ -54,9 +55,10 @@ const getShopAttendants = async (req: Request, res: Response) => {
   });
 
   if (!existingShop) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", data: null, error: "Shop doesn't exist" });
+    return;
   }
 
   const attendants = await db.user.findMany({
@@ -85,9 +87,10 @@ const getShopById = async (req: Request, res: Response) => {
   });
 
   if (!existingShop) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", data: null, error: "Shop doesn't exist" });
+    return;
   }
 
   res.status(StatusCodes.OK).json({

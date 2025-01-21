@@ -24,6 +24,15 @@ const createSupplier = async (req: Request, res: Response) => {
     where: { phone },
   });
 
+  if (existingSupplierByPhone) {
+    res.status(StatusCodes.CONFLICT).json({
+      status: "fail",
+      data: null,
+      error: `Phone number (${phone}) already in use.`,
+    });
+    return;
+  }
+
   if (email) {
     const existingCustomerByEmail = await db.customer.findUnique({
       where: {
@@ -32,11 +41,12 @@ const createSupplier = async (req: Request, res: Response) => {
     });
 
     if (existingCustomerByEmail) {
-      return res.status(StatusCodes.CONFLICT).json({
+      res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         data: null,
         error: `Email (${email}) already in use.`,
       });
+      return;
     }
   }
 
@@ -45,12 +55,13 @@ const createSupplier = async (req: Request, res: Response) => {
       where: { regNumber },
     });
 
-    if (regNumber) {
-      return res.status(StatusCodes.CONFLICT).json({
+    if (existingSupplierByRegNum) {
+      res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         data: null,
         error: `Reg Number (${regNumber}) already in use.`,
       });
+      return;
     }
   }
 
@@ -73,14 +84,14 @@ const createSupplier = async (req: Request, res: Response) => {
     },
   });
 
-  return res.status(StatusCodes.CREATED).json(newSupplier);
+  res.status(StatusCodes.CREATED).json(newSupplier);
 };
 
 const getSuppliers = async (req: Request, res: Response) => {
   const suppliers = await db.supplier.findMany({
     orderBy: { createdAt: "desc" },
   });
-  return res.status(StatusCodes.OK).json(suppliers);
+  res.status(StatusCodes.OK).json(suppliers);
 };
 
 const getSupplierById = async (req: Request, res: Response) => {
@@ -92,12 +103,13 @@ const getSupplierById = async (req: Request, res: Response) => {
   });
 
   if (!supplier) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "Supplier not found", data: null });
+    return;
   }
 
-  return res.status(StatusCodes.OK).json(supplier);
+  res.status(StatusCodes.OK).json(supplier);
 };
 
 export { createSupplier, getSupplierById, getSuppliers };

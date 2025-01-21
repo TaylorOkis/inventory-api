@@ -10,11 +10,12 @@ const createCategory = async (req: Request, res: Response) => {
   });
 
   if (existingCategory) {
-    return res.status(StatusCodes.CONFLICT).json({
+    res.status(StatusCodes.CONFLICT).json({
       status: "fail",
       data: null,
       error: `Category (${name}) already exist`,
     });
+    return;
   }
 
   const newCategory = await db.category.create({
@@ -51,9 +52,11 @@ const getCategoryById = async (req: Request, res: Response) => {
   });
 
   if (!existingCategory) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", data: null, error: "Category doesn't exist" });
+
+    return;
   }
 
   res.status(StatusCodes.OK).json({
@@ -72,9 +75,10 @@ const updateCategoryById = async (req: Request, res: Response) => {
   });
 
   if (!existingCategory) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "User not found", data: null });
+    return;
   }
 
   if (slug !== existingCategory.slug) {
@@ -82,11 +86,12 @@ const updateCategoryById = async (req: Request, res: Response) => {
       where: { slug },
     });
     if (existingCategoryBySlug) {
-      return res.status(StatusCodes.CONFLICT).json({
+      res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         error: `Slug (${slug}) already exist`,
         data: null,
       });
+      return;
     }
   }
 
@@ -94,7 +99,7 @@ const updateCategoryById = async (req: Request, res: Response) => {
     where: { id },
     data: { name, slug },
   });
-  return res
+  res
     .status(StatusCodes.OK)
     .json({ status: "success", data: updateCategory, error: null });
 };
@@ -106,16 +111,17 @@ const deleteCategoryById = async (req: Request, res: Response) => {
     where: { id },
   });
   if (!Category) {
-    return res
+    res
       .status(StatusCodes.NOT_FOUND)
       .json({ status: "fail", error: "Category not found", data: null });
+    return;
   }
 
   await db.category.delete({
     where: { id },
   });
 
-  return res.status(StatusCodes.OK).json({ status: "success" });
+  res.status(StatusCodes.OK).json({ status: "success" });
 };
 
 export {

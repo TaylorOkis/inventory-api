@@ -21,27 +21,29 @@ const login = async (req: Request, res: Response) => {
   }
 
   if (!existingUser) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
+    res.status(StatusCodes.UNAUTHORIZED).json({
       status: "fail",
       data: null,
       error: "Wrong username or password",
     });
+    return;
   }
 
   const passwordMatch = await bcrypt.compare(password, existingUser.password);
   if (!passwordMatch) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
+    res.status(StatusCodes.UNAUTHORIZED).json({
       status: "fail",
       data: null,
       error: "Wrong username or password",
     });
+    return;
   }
 
   const { password: savedPassword, ...otherData } = existingUser;
   const accessToken = generateAccessToken(otherData);
   const result = { ...otherData, accessToken };
 
-  return res.status(StatusCodes.OK).json({ status: "success", data: result });
+  res.status(StatusCodes.OK).json({ status: "success", data: result });
 };
 
 export { login };
