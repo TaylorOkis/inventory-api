@@ -34,13 +34,13 @@ const createSupplier = async (req: Request, res: Response) => {
   }
 
   if (email) {
-    const existingCustomerByEmail = await db.customer.findUnique({
+    const existingSupplierByEmail = await db.supplier.findUnique({
       where: {
         email,
       },
     });
 
-    if (existingCustomerByEmail) {
+    if (existingSupplierByEmail) {
       res.status(StatusCodes.CONFLICT).json({
         status: "fail",
         data: null,
