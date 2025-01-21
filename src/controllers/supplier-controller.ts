@@ -65,7 +65,7 @@ const createSupplier = async (req: Request, res: Response) => {
     }
   }
 
-  const newSupplier = db.supplier.create({
+  const newSupplier = await db.supplier.create({
     data: {
       supplierType,
       email,
