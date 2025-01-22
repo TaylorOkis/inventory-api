@@ -32,7 +32,7 @@ const createProduct = async (req: Request, res: Response) => {
     res.status(StatusCodes.CONFLICT).json({
       status: "fail",
       data: null,
-      error: `Product (${name}) already exist`,
+      error: `Slug (${slug}) already exist`,
     });
     return;
   }
@@ -66,7 +66,7 @@ const createProduct = async (req: Request, res: Response) => {
   }
 
   const existingProductCode = await db.product.findUnique({
-    where: { barCode },
+    where: { productCode },
   });
 
   if (existingProductCode) {
@@ -182,7 +182,7 @@ const updateProductById = async (req: Request, res: Response) => {
     if (existingProductBySlug) {
       res.status(StatusCodes.CONFLICT).json({
         status: "fail",
-        error: `Product (${name}) already exist`,
+        error: `Slug (${name}) already exist`,
         data: null,
       });
       return;
@@ -223,7 +223,7 @@ const updateProductById = async (req: Request, res: Response) => {
 
   if (productCode !== existingProduct.productCode) {
     const existingProductCode = await db.product.findUnique({
-      where: { barCode },
+      where: { productCode },
     });
 
     if (existingProductCode) {

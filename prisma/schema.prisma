@@ -105,6 +105,7 @@ model Shop {
   adminId       String     
   admin         User       @relation(fields: [adminId], references: [id], name: "AdminShops")
   attendantIds  String[]     
+  // Product       Product[]
 }
 
 
@@ -137,29 +138,32 @@ model Category {
 }
 
 model Product {
-   id            String     @id @default(uuid())
-   name          String
-   description   String?
-   alertQty      Int
-   stockQty      Int
-   barCode       String?   @unique
-   sellingPrice  Int
-   buyingPrice   Int?
-   tax           Int?
-   batchNumber   String? 
-   image         String     @default("https://img.icons8.com/?size=100&id=53386&format=png&color=000000")
-   sku           String     @unique
-   productCode   String     @unique
-   slug          String     @unique
-   supplierId    String
-   unitId        String
-   brandId       String
-   categoryId    String
-   expiryDate    DateTime?
-   supplier      Supplier   @relation(fields: [supplierId], references: [id])
-   unit          Unit       @relation(fields: [unitId], references: [id])
-   brand         Brand      @relation(fields: [brandId], references: [id])
-   category      Category   @relation(fields: [categoryId], references: [id])
-   createdAt     DateTime   @default(now())
-   updatedAt     DateTime   @updatedAt
+   id             String     @id @default(uuid())
+   name           String
+   description    String?
+   alertQty       Int
+   stockQty       Int
+   barCode        String?    @unique
+   sellingPrice   Int
+   // wholesalePrice Int        @default(0)
+   buyingPrice    Int?
+   tax            Int?
+   batchNumber    String? 
+   image          String     @default("https://img.icons8.com/?size=100&id=53386&format=png&color=000000")
+   sku            String     @unique
+   productCode    String     @unique
+   slug           String     @unique
+   supplierId     String
+   // shopId         String
+   unitId         String
+   brandId        String
+   categoryId     String
+   expiryDate     DateTime?  @default("2027-01-29T23:59:59.000Z")
+   // shop           Shop       @relation(fields: [shopId], references: [id])
+   supplier       Supplier   @relation(fields: [supplierId], references: [id])
+   unit           Unit       @relation(fields: [unitId], references: [id])
+   brand          Brand      @relation(fields: [brandId], references: [id])
+   category       Category   @relation(fields: [categoryId], references: [id])
+   createdAt      DateTime   @default(now())
+   updatedAt      DateTime   @updatedAt
 }

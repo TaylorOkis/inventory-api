@@ -77,7 +77,7 @@ const updateCategoryById = async (req: Request, res: Response) => {
   if (!existingCategory) {
     res
       .status(StatusCodes.NOT_FOUND)
-      .json({ status: "fail", error: "User not found", data: null });
+      .json({ status: "fail", error: "Category not found", data: null });
     return;
   }
 

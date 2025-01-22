@@ -74,7 +74,7 @@ const updateUnitById = async (req: Request, res: Response) => {
   if (!existingUnit) {
     res
       .status(StatusCodes.NOT_FOUND)
-      .json({ status: "fail", error: "User not found", data: null });
+      .json({ status: "fail", error: "Unit not found", data: null });
     return;
   }
 
